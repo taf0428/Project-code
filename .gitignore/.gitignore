@@ -1,209 +1,215 @@
 from bs4 import BeautifulSoup
-import lxml
-from tkinter import *
-import urllib
-import tweepy
-import ssl
-import re
-def main():
+ from multiprocessing import Pool
+ import lxml
+ from tkinter import *
+ import urllib
+ import tweepy
+ import ssl
+ import re
+ def main():
 
-    GUI()
-    WebCrawler()
-''' Keyword_Value_list = WebCrawler(Keyword_List,Algorthim_List,Website_List)
-    PLotter(Keyword_Value_List,Plot_Type)'''
+     GUI()
+     WebCrawler()
+ ''' Keyword_Value_list = WebCrawler(Keyword_List,Algorthim_List,Website_List)
+     PLotter(Keyword_Value_List,Plot_Type)'''
 
-class GUI():
-    def __init__(self) :
-        def done():
-            #easie for use later on
-            global keyword1 ,keyword2 ,Plot_Type,algorithm_list
-            keyword1 = textbox1.get()
-            keyword2 = textbox2.get()
-            Plot_Type = D_variable.get()
-            algorithm_list = C_var.get()
-            master.destroy()
-            
-        def open_Website_list():
-            try:
-                print("These are current Websites in list")
-                with open('Website_list.txt','r') as f:
-                    for line in f:
-                        for word in line.split():
-                            print(word)
-    
-            except IOError:
-                f= open("Website_list.txt","w+")
-                f.close
-                with open('Website_list.txt','r') as f:
-                    for line in f:
-                        for word in line.split():
-                            print(word)
-    
-            
-        def Update_Website_list():
-            f = open("Website_list.txt","a")
-            for i in range(10):
-                website = input("add a site ")
-                website = " "+website
-                f.write(website)
-                print("done")
-                f.close
-        
-        def Reset_Website_list():
-            f= open("Website_list.txt","w+")
-            f.close 
-        
-        def Open_Algorithm_list():
-            try:
-                print("The currernt list is")
-                with open('Algorithm_list.txt','r') as f:
-                    for line in f:
-                        for word in line.split():
-                            print(word)
-            except IOError:
-                f= open("Algorithm_list.txt","w+")
-                f.close
-                with open('Algorithm_list.txt','r') as f:
-                    for line in f:
-                        for word in line.split():
-                            print(word)
-            
-            
-        def Update_Algorithm_list():
-                f = open("Algorithm_list.txt","a")
-                try:
-                    with open('Website_list.txt','r') as t:
-                        for line in t:
-                            for word in line.split():
-                                website = input(word +" ")
-                                website = (word + "," + website + " " )
-                                f.write(website)
-                                print("done")
-                except IOError:
-                    print("need to make website list first")
-        def Reset_Algorithm_list():
-            f= open("Algorithm_list.txt","w+")
-            f.close 
-        
-        master = Tk()
-    
-        #the labels for the textboxs 
-        Label(master, text="Search Term 1").grid(row=0)
-        Label(master, text="Search Term 2").grid(row=1)
-    
-        #The Textbox code
-        textbox1 = Entry(master)
-        textbox2 = Entry(master)
-        textbox1.grid(row=0, column=1)
-        textbox2.grid(row=1, column=1)
-    
-        # an exitbutton
-        Button(master, text="Done", command=done).grid(row=5, column=2, sticky=W, pady=4)
-    
-        #the dropbox code
-        D_variable = StringVar(master)
-        D_variable.set("Bar Chart") # default value
-        dropbox = OptionMenu(master, D_variable, "Bar Chart", "Line Graph").grid(row=2, column=1)
-    
-        #the checkbox code
-        C_var = IntVar()
-        c = Checkbutton(master, text="Algorithm", variable=C_var).grid(row=3, column=0)
-    
-        #the website list buttons
-        Button(master, text="website list", command=open_Website_list).grid(row=4,column=1)
-        Button(master, text="Update", command=Update_Website_list).grid(row=4,column=2) 
-        Button(master, text="Reset", command=Reset_Website_list).grid(row=4,column=3)
-    
-        #the algorithm buttons
-        Button(master, text="Algorithm list", command=Open_Algorithm_list).grid(row=3,column=1)
-        Button(master, text="Update", command=Update_Algorithm_list).grid(row=3,column=2) 
-        Button(master, text="Reset", command=Reset_Algorithm_list).grid(row=3,column=3)
-    
-        mainloop()
+ class GUI():
+     def __init__(self) :
+         def done():
+             #easie for use later on
+             global keyword1 ,keyword2 ,Plot_Type,algorithm_list
+             keyword1 = textbox1.get()
+             keyword2 = textbox2.get()
+             Plot_Type = D_variable.get()
+             algorithm_list = C_var.get()
+             master.destroy()
+             
+         def open_Website_list():
+             try:
+                 print("These are current Websites in list")
+                 with open('Website_list.txt','r') as f:
+                     for line in f:
+                         for word in line.split():
+                             print(word)
+     
+             except IOError:
+                 f= open("Website_list.txt","w+")
+                 f.close
+                 with open('Website_list.txt','r') as f:
+                     for line in f:
+                         for word in line.split():
+                             print(word)
+     
+             
+         def Update_Website_list():
+             f = open("Website_list.txt","a")
+             for i in range(10):
+                 website = input("add a site ")
+                 website = " "+website
+                 f.write(website)
+                 print("done")
+                 f.close
+         
+         def Reset_Website_list():
+             f= open("Website_list.txt","w+")
+             f.close 
+         
+         def Open_Algorithm_list():
+             try:
+                 print("The currernt list is")
+                 with open('Algorithm_list.txt','r') as f:
+                     for line in f:
+                         for word in line.split():
+                             print(word)
+             except IOError:
+                 f= open("Algorithm_list.txt","w+")
+                 f.close
+                 with open('Algorithm_list.txt','r') as f:
+                     for line in f:
+                         for word in line.split():
+                             print(word)
+             
+             
+         def Update_Algorithm_list():
+                 f = open("Algorithm_list.txt","a")
+                 try:
+                     with open('Website_list.txt','r') as t:
+                         for line in t:
+                             for word in line.split():
+                                 website = input(word +" ")
+                                 website = (word + "," + website + " " )
+                                 f.write(website)
+                                 print("done")
+                 except IOError:
+                     print("need to make website list first")
+         def Reset_Algorithm_list():
+             f= open("Algorithm_list.txt","w+")
+             f.close 
+         
+         master = Tk()
+     
+         #the labels for the textboxs 
+         Label(master, text="Search Term 1").grid(row=0)
+         Label(master, text="Search Term 2").grid(row=1)
+     
+         #The Textbox code
+         textbox1 = Entry(master)
+         textbox2 = Entry(master)
+         textbox1.grid(row=0, column=1)
+         textbox2.grid(row=1, column=1)
+     
+         # an exitbutton
+         Button(master, text="Done", command=done).grid(row=5, column=2, sticky=W, pady=4)
+     
+         #the dropbox code
+         D_variable = StringVar(master)
+         D_variable.set("Bar Chart") # default value
+         dropbox = OptionMenu(master, D_variable, "Bar Chart", "Line Graph").grid(row=2, column=1)
+     
+         #the checkbox code
+         C_var = IntVar()
+         c = Checkbutton(master, text="Algorithm", variable=C_var).grid(row=3, column=0)
+     
+         #the website list buttons
+         Button(master, text="website list", command=open_Website_list).grid(row=4,column=1)
+         Button(master, text="Update", command=Update_Website_list).grid(row=4,column=2) 
+         Button(master, text="Reset", command=Reset_Website_list).grid(row=4,column=3)
+     
+         #the algorithm buttons
+         Button(master, text="Algorithm list", command=Open_Algorithm_list).grid(row=3,column=1)
+         Button(master, text="Update", command=Update_Algorithm_list).grid(row=3,column=2) 
+         Button(master, text="Reset", command=Reset_Algorithm_list).grid(row=3,column=3)
+     
+         mainloop()
 
-#the webcrawler
-def WebCrawler():
-    
-    context = ssl._create_unverified_context()#needed to get round school sercurity settings
-    with open('Algorithm_list.txt','r') as f:
-        for line in f:
-            for word in line.split():
-                tally = 0
-                Site_tally = 0
-                print(word[-1] +" - "+ word[0:-2])
-                url = word[0:-2]
-                #Seperates the website and the algorithm
-                content = urllib.request.urlopen(url, context=context).read()
-                soup = BeautifulSoup(content)
-                #loads up the main page of the site to be scraped from
-                linklist = []
-                for link in soup.find_all('a'):
-                    link = (link.get('href'))
-                    print(link)
-                    #gets the children sites from the main one and goes though them
-                    
-                    if link[0:len(url)] == url:
-                        print("K")
-                        pass
-                    else:
-                        link = (url + link)
-                    print(link)
-                    # sometimes the href returned would just be /food/ this add
-                    
-                    check = True
-                    check = linkChecker(link,linklist)
-                    #check to make sure link hasn't been used before                                        
-                    print(check)
-                    if check == True:
-                        tally = WebScraper(context,link,tally) 
-                    else:
-                        pass
-                print("tally =", tally)
-                print(int(word[-1]))
-                Site_tally = tally * int(word[-1])
-                print("site tally =", Site_tally)
-                Final_tally =+ Site_tally
-                print("final tally =", Final_tally)
-                
-#exists to make sure link has not allready been scraped
-def linkChecker(link,linklist):  
-    if link == None:
-        return False
-    if link[0] == "#":
-        print("#")
-        return False
-        
-    #checks for a # at the start of a site as if it has one system dosn't work
-    else:
-        if len(linklist) == 0:
-            pass
-            #done to avoid the empty list problem
-        else:
-            for x in linklist:  
-                if x == link:
-                    return False
-                    #checks to make sure a link doesn't repeat 
-                else:
-                    linklist.insert(0,link)
-                    pass
-    return True          
-    
-#the webscraper itselfs
-def WebScraper(context,link,tally):
-    try:
-        
-        content = urllib.request.urlopen(link, context=context).read()
-        soup = BeautifulSoup(content)
-        results = soup.body.find_all(string=re.compile('.*{0}.*'.format(keyword1)), recursive=True)
-        print('Found the word "{0}" {1} times\n'.format(keyword1, len(results)))
-        results = len(results)
-    except AttributeError:
-        results = 0
-    except ValueError:
-        results = 0
-    except urllib.error.HTTPError:
-        results = 0
-    tally = tally + results
-    return tally
-main()
-#yay
+ #the webcrawler
+ def WebCrawler():
+     Final_tally = 0
+     context = ssl._create_unverified_context()#needed to get round school sercurity settings
+     with open('Algorithm_list.txt','r') as f:
+         for line in f:
+             for word in line.split():
+                 tally = 0
+                 Site_tally = 0
+                 print(word[-1] +" - "+ word[0:-2])
+                 url = word[0:-2]
+                 #Seperates the website and the algorithm
+                 content = urllib.request.urlopen(url, context=context).read()
+                 soup = BeautifulSoup(content)
+                 #loads up the main page of the site to be scraped from
+                 linklist = []
+                 for link in soup.find_all('a'):
+                     link = (link.get('href'))
+                     
+                     #gets the children sites from the main one and goes though them
+                     try:
+                         if link[0:len(url)] == url:
+                            
+                             pass
+                         elif link[0:4] == 'http':
+                             pass
+                         else:
+                             link = (url + link)
+                     except TypeError:
+                         pass
+                     
+                     # sometimes the href returned would just be /food/ this adds ending
+                     
+                     check = linkChecker(link,linklist)
+                     #check to make sure link hasn't been used before                                        
+                     
+                 print(len(linklist))
+                 with Pool(8) as p:
+                         result = (p.map(WebScraper,linklist))
+                 tally = 0
+                 for x in result:
+                     tally = x + tally
+                 print("tally =", tally)
+                 print(int(word[-1]))
+                 Site_tally = tally * int(word[-1])
+                 print("site tally =", Site_tally)
+                 Final_tally = Final_tally + Site_tally
+                 print("final tally =", Final_tally)
+                 
+ #exists to make sure link has not allready been scraped
+ def linkChecker(link,linklist):  
+     if link == None:
+         return False
+     if link[0] == "#":
+         print("#")
+         return False
+         
+     #checks for a # at the start of a site as if it has one system dosn't work
+     else:
+         if len(linklist) == 0:
+             linklist.insert(0,link)
+             pass
+             #done to avoid the empty list problem
+         else:
+             for x in linklist: 
+                 if x == link:
+                     return False
+                     #checks to make sure a link doesn't repeat 
+                 else:
+                     linklist.insert(0,link)
+                     return True          
+     
+ #the webscraper itselfs
+ def WebScraper(link):
+     context = ssl._create_unverified_context()#needed to get round school sercurity settings
+     try:
+         
+         content = urllib.request.urlopen(link, context=context).read()
+         soup = BeautifulSoup(content)
+         results = soup.body.find_all(string=re.compile('.*{0}.*'.format(keyword1)), recursive=True)
+         results = len(results)
+     except AttributeError:
+         results = 0
+     except ValueError:
+         results = 0
+     except urllib.error.HTTPError:
+         results = 0
+     except urllib.error.URLError:
+         results = 0
+     return results
+ main()
